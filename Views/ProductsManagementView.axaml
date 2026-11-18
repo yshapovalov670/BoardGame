@@ -1,0 +1,120 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="BoardGame.Views.ProductsManagementView"
+             Tag="Управление товарами">
+
+    <DockPanel>
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto" Margin="0,0,0,16">
+            <StackPanel Spacing="2">
+                <TextBlock Classes="h1" Text="Товары"/>
+                <TextBlock Classes="muted" Text="Добавление, редактирование и удаление игр, учёт остатков на складе"/>
+            </StackPanel>
+            <Button Grid.Column="1" Content="+ Добавить игру" Classes="primary"
+                    VerticalAlignment="Center" Click="AddProductClick"/>
+        </Grid>
+
+        <Grid ColumnDefinitions="290,*">
+            <!-- Список товаров -->
+            <Border Grid.Column="0" Classes="card" Padding="8" Margin="0,0,16,0">
+                <DockPanel>
+                    <TextBox x:Name="SearchBox" DockPanel.Dock="Top" Margin="4,4,4,8"
+                             PlaceholderText="Поиск по названию или артикулу" TextChanged="SearchChanged"/>
+                    <ListBox x:Name="ProductsList" Background="Transparent" SelectionChanged="ProductSelected">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Spacing="2" Margin="4,6">
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                    <TextBlock FontSize="12" Classes="muted">
+                                        <Run Text="{Binding Article, Mode=OneWay}"/>
+                                        <Run Text="{Binding Path=Price, Mode=OneWay, StringFormat={} · {0:N0} руб.}"/>
+                                        <Run Text="{Binding Path=StockQuantity, Mode=OneWay, StringFormat={} · склад: {0} шт.}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </Border>
+
+            <!-- Форма -->
+            <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Disabled">
+                <Border Classes="card" Padding="26" VerticalAlignment="Top">
+                    <Grid ColumnDefinitions="*,170" ColumnSpacing="20">
+                        <StackPanel Spacing="12">
+                            <TextBlock x:Name="FormTitle" Text="Добавление новой игры" Classes="h2"/>
+
+                            <Grid ColumnDefinitions="140,14,*">
+                                <StackPanel>
+                                    <TextBlock Text="АРТИКУЛ" Classes="label"/>
+                                    <TextBox x:Name="EditArticle" PlaceholderText="BG-0013" MaxLength="20"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="НАЗВАНИЕ" Classes="label"/>
+                                    <TextBox x:Name="EditName" PlaceholderText="Например: Каркассон" MaxLength="150"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="1.6*,14,*,14,*">
+                                <StackPanel>
+                                    <TextBlock Text="КАТЕГОРИЯ" Classes="label"/>
+                                    <ComboBox x:Name="EditCategory" HorizontalAlignment="Stretch"
+                                              PlaceholderText="Выберите..."/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="ЦЕНА, РУБ." Classes="label"/>
+                                    <NumericUpDown x:Name="EditPrice" Minimum="1" Maximum="1000000"
+                                                   Increment="100" Value="1000" FormatString="0.##"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="ОСТАТОК, ШТ." Classes="label"/>
+                                    <NumericUpDown x:Name="EditStock" Minimum="0" Maximum="100000"
+                                                   Increment="1" Value="0" FormatString="0"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Grid ColumnDefinitions="*,14,*,14,*">
+                                <StackPanel>
+                                    <TextBlock Text="ИГРОКОВ" Classes="label"/>
+                                    <TextBox x:Name="EditPlayers" PlaceholderText="2–4" MaxLength="20"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="ВОЗРАСТ, ЛЕТ" Classes="label"/>
+                                    <NumericUpDown x:Name="EditAge" Minimum="0" Maximum="18" Increment="1" FormatString="0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="4">
+                                    <TextBlock Text="ПАРТИЯ, МИН" Classes="label"/>
+                                    <NumericUpDown x:Name="EditTime" Minimum="1" Maximum="600" Increment="5" FormatString="0"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <StackPanel>
+                                <TextBlock Text="ОПИСАНИЕ" Classes="label"/>
+                                <TextBox x:Name="EditDescription" PlaceholderText="Кратко о правилах и особенностях игры"
+                                         AcceptsReturn="True" Height="80" TextWrapping="Wrap"/>
+                            </StackPanel>
+                            <StackPanel>
+                                <TextBlock Text="ФАЙЛ ОБЛОЖКИ (ПАПКА ASSETS/IMAGES)" Classes="label"/>
+                                <TextBox x:Name="EditImage" PlaceholderText="carcassonne.png" MaxLength="255"
+                                         TextChanged="ImageChanged"/>
+                            </StackPanel>
+
+                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                <Button Content="Сохранить игру" Classes="primary" Click="SaveProductClick"/>
+                                <Button x:Name="DeleteButton" Content="Удалить игру" Classes="danger"
+                                        Click="DeleteProductClick" IsVisible="False"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <!-- Предпросмотр обложки -->
+                        <StackPanel Grid.Column="1" Spacing="6">
+                            <TextBlock Text="ПРЕДПРОСМОТР" Classes="label"/>
+                            <Border CornerRadius="10" ClipToBounds="True" Height="140">
+                                <Image x:Name="PreviewImage" Stretch="UniformToFill"/>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </ScrollViewer>
+        </Grid>
+    </DockPanel>
+</UserControl>

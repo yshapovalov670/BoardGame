@@ -1,0 +1,59 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="BoardGame.Views.LoginView"
+             Tag="Вход">
+
+    <!-- Карточка из двух частей: слева форма входа, справа фото с логотипом -->
+    <Border Classes="card" Padding="0" ClipToBounds="True" CornerRadius="22"
+            Width="820" Height="460" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid ColumnDefinitions="*,360">
+
+            <Panel Grid.Column="1">
+                <Image Source="avares://BoardGame/Assets/Images/colonizers.png" Stretch="UniformToFill"/>
+                <Border>
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0%,0%" EndPoint="0%,100%">
+                            <GradientStop Offset="0" Color="#332A2163"/>
+                            <GradientStop Offset="1" Color="#F02A2163"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                </Border>
+                <StackPanel VerticalAlignment="Bottom" Spacing="6" Margin="28">
+                    <Image Source="avares://BoardGame/Assets/logo.png" Width="64" Height="64" HorizontalAlignment="Left"/>
+                    <TextBlock Text="BoardGames" Foreground="White" FontSize="26" FontWeight="Black"/>
+                    <TextBlock Text="Каталог, корзина и бронирование настольных игр"
+                               Foreground="{StaticResource BrandTextBrush}"/>
+                </StackPanel>
+            </Panel>
+
+            <StackPanel Grid.Column="0" Spacing="14" Margin="44,0" VerticalAlignment="Center">
+                <StackPanel Spacing="2">
+                    <TextBlock Classes="h1" Text="Вход в систему"/>
+                    <TextBlock Classes="muted" Text="Введите логин и пароль своей учётной записи"/>
+                </StackPanel>
+
+                <StackPanel>
+                    <TextBlock Text="ЛОГИН" Classes="label"/>
+                    <TextBox x:Name="LoginBox" PlaceholderText="Например, admin"/>
+                </StackPanel>
+
+                <StackPanel>
+                    <TextBlock Text="ПАРОЛЬ" Classes="label"/>
+                    <TextBox x:Name="PasswordBox" PasswordChar="•" PlaceholderText="Пароль" RevealPassword="False"/>
+                </StackPanel>
+
+                <!-- Сообщение об ошибке -->
+                <TextBlock x:Name="StatusText" Foreground="{StaticResource DangerBrush}" FontSize="13"
+                           IsVisible="False"/>
+
+                <Button x:Name="LoginButton" Content="Войти" Classes="primary" Click="LoginClick"
+                        HorizontalAlignment="Stretch" Padding="16,11"/>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="6">
+                    <TextBlock Text="Нет аккаунта?" Classes="muted" VerticalAlignment="Center"/>
+                    <Button Content="Зарегистрироваться" Classes="link" Click="GoToRegisterClick"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>

@@ -1,0 +1,91 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="BoardGame.Views.CartView"
+             Tag="Корзина">
+
+    <Grid ColumnDefinitions="*,340">
+
+        <!-- ЛЕВАЯ ЧАСТЬ: позиции корзины -->
+        <DockPanel Grid.Column="0" Margin="0,0,24,0">
+            <StackPanel DockPanel.Dock="Top" Spacing="2" Margin="0,0,0,16">
+                <TextBlock Classes="h1" Text="Корзина"/>
+                <TextBlock Classes="muted" Text="Измените количество или удалите позицию, затем оформите заказ"/>
+            </StackPanel>
+
+            <Grid>
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+                    <ItemsControl x:Name="LinesList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Classes="card" Padding="14" Margin="0,0,0,10">
+                                    <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto">
+                                        <Border Width="96" Height="68" CornerRadius="8" ClipToBounds="True" Margin="0,0,16,0">
+                                            <Image Source="{Binding Image}" Stretch="UniformToFill"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="16"/>
+                                            <TextBlock Classes="muted" FontSize="13">
+                                                <Run Text="{Binding PriceText, Mode=OneWay}"/>
+                                                <Run Text="{Binding StockText, Mode=OneWay}"/>
+                                            </TextBlock>
+                                        </StackPanel>
+                                        <NumericUpDown Grid.Column="2" Width="120" Minimum="1" Maximum="{Binding MaxQuantity}"
+                                                       Value="{Binding Quantity, Mode=OneWay}" FormatString="0" Increment="1"
+                                                       VerticalAlignment="Center" Tag="{Binding}"
+                                                       ValueChanged="QuantityChanged"/>
+                                        <TextBlock Grid.Column="3" Text="{Binding LineTotalText}" FontWeight="Bold" FontSize="17"
+                                                   MinWidth="110" TextAlignment="Right" VerticalAlignment="Center"/>
+                                        <Button Grid.Column="4" Content="✕" Classes="danger" Margin="14,0,0,0"
+                                                VerticalAlignment="Center" Tag="{Binding}" Click="RemoveClick"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <StackPanel x:Name="EmptyPanel" IsVisible="False" Spacing="10"
+                            HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <TextBlock Text="Корзина пуста" Classes="h2" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Выберите игры в каталоге" Classes="muted" HorizontalAlignment="Center"/>
+                    <Button Content="Перейти в каталог" Classes="primary" HorizontalAlignment="Center" Click="CatalogClick"/>
+                </StackPanel>
+            </Grid>
+        </DockPanel>
+
+        <!-- ПРАВАЯ ЧАСТЬ: итог и оформление -->
+        <Border Grid.Column="1" Classes="card" VerticalAlignment="Top" Padding="24">
+            <StackPanel Spacing="14">
+                <TextBlock Text="Ваш заказ" Classes="h2"/>
+
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="Товаров" Classes="muted"/>
+                    <TextBlock x:Name="CountText" Grid.Column="1" Text="0 шт."/>
+                </Grid>
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="Без скидки" Classes="muted"/>
+                    <TextBlock x:Name="BaseSumText" Grid.Column="1" Text="0 руб."/>
+                </Grid>
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="Скидка" Classes="muted"/>
+                    <TextBlock x:Name="DiscountText" Grid.Column="1" Text="0 руб."
+                               Foreground="{StaticResource WarningBrush}"/>
+                </Grid>
+                <Border Height="1" Background="{StaticResource BorderBrush}"/>
+                <Grid ColumnDefinitions="*,Auto">
+                    <TextBlock Text="Итого к оплате" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    <TextBlock x:Name="TotalText" Grid.Column="1" Text="0 руб."
+                               FontWeight="Bold" FontSize="22" Foreground="{StaticResource AccentBrush}"/>
+                </Grid>
+
+                <Border Background="{StaticResource AccentSoftBrush}" CornerRadius="10" Padding="12">
+                    <TextBlock x:Name="ReserveText" FontSize="13" Foreground="{StaticResource AccentBrush}"/>
+                </Border>
+
+                <Button x:Name="CheckoutButton" Content="Оформить заказ" Classes="primary"
+                        HorizontalAlignment="Stretch" Padding="16,11" Click="CheckoutClick"/>
+                <Button Content="Очистить корзину" Classes="ghost" HorizontalAlignment="Stretch" Click="ClearClick"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</UserControl>

@@ -1,0 +1,120 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="BoardGame.Views.OrderDetailsView"
+             Tag="Детали заказа">
+
+    <Grid>
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Spacing="16" MaxWidth="860" HorizontalAlignment="Stretch">
+                <Button Content="← Назад к заказам" Classes="link" Click="GoBackClick"/>
+
+                <Border Classes="card" Padding="28">
+                    <StackPanel Spacing="22">
+
+                        <!-- Заголовок и статус -->
+                        <Grid ColumnDefinitions="*,Auto">
+                            <StackPanel Spacing="2">
+                                <TextBlock x:Name="HeaderText" Classes="h1" Text="Заказ №"/>
+                                <TextBlock x:Name="CreatedText" Classes="muted" FontSize="13"/>
+                            </StackPanel>
+                            <Border x:Name="StatusBadge" Grid.Column="1" Classes="badge" Padding="14,6">
+                                <TextBlock x:Name="StatusText" FontSize="14"/>
+                            </Border>
+                        </Grid>
+
+                        <Border Height="1" Background="{StaticResource BorderBrush}"/>
+
+                        <!-- Сведения -->
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" RowSpacing="18" ColumnSpacing="24">
+                            <StackPanel Grid.Row="0" Grid.Column="0">
+                                <TextBlock Text="ПОКУПАТЕЛЬ" Classes="label"/>
+                                <TextBlock x:Name="ClientText" FontSize="16" FontWeight="SemiBold"/>
+                                <TextBlock x:Name="ClientContactsText" Classes="muted" FontSize="13"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="0" Grid.Column="1">
+                                <TextBlock Text="СРОК БРОНИ" Classes="label"/>
+                                <TextBlock x:Name="ReserveText" FontSize="16" FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="0">
+                                <TextBlock Text="ВЫДАЛ" Classes="label"/>
+                                <TextBlock x:Name="EmployeeText" FontSize="16" FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="1" Grid.Column="1">
+                                <TextBlock Text="ПОЛУЧЕНИЕ" Classes="label"/>
+                                <TextBlock Text="Самовывоз, оплата в магазине" FontSize="16" FontWeight="SemiBold"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Состав заказа -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="СОСТАВ ЗАКАЗА" Classes="label"/>
+                            <Grid ColumnDefinitions="*,140,80,130" Margin="12,0">
+                                <TextBlock Text="Игра" Classes="muted" FontSize="12"/>
+                                <TextBlock Grid.Column="1" Text="Цена" Classes="muted" FontSize="12" TextAlignment="Right"/>
+                                <TextBlock Grid.Column="2" Text="Кол-во" Classes="muted" FontSize="12" TextAlignment="Right"/>
+                                <TextBlock Grid.Column="3" Text="Сумма" Classes="muted" FontSize="12" TextAlignment="Right"/>
+                            </Grid>
+                            <ItemsControl x:Name="ItemsList">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="{StaticResource BackgroundBrush}" CornerRadius="8"
+                                                Padding="12,10" Margin="0,0,0,6">
+                                            <Grid ColumnDefinitions="*,140,80,130">
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding ProductName}" FontWeight="SemiBold"/>
+                                                    <TextBlock Text="{Binding Product.Article}" Classes="muted" FontSize="12"/>
+                                                </StackPanel>
+                                                <TextBlock Grid.Column="1" Text="{Binding Price, StringFormat={}{0:N2} руб.}"
+                                                           TextAlignment="Right" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" Text="{Binding Quantity, StringFormat={}{0} шт.}"
+                                                           TextAlignment="Right" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="3" Text="{Binding LineTotal, StringFormat={}{0:N2} руб.}"
+                                                           FontWeight="SemiBold" TextAlignment="Right" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+
+                        <!-- Итог -->
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock x:Name="CountText" Classes="muted" VerticalAlignment="Center"/>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="12">
+                                <TextBlock Text="Итого к оплате" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="TotalText" FontWeight="Bold" FontSize="24"
+                                           Foreground="{StaticResource AccentBrush}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Действия -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                            <Button x:Name="IssueButton" Content="Заказ выдан покупателю" Classes="primary"
+                                    Click="IssueClick" IsVisible="False"/>
+                            <Button x:Name="CancelButton" Content="Отменить заказ" Classes="danger"
+                                    Click="CancelOrderClick" IsVisible="False"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- ОКНО ПОДТВЕРЖДЕНИЯ ОТМЕНЫ (поверх страницы) -->
+        <Border x:Name="ConfirmPanel" Background="#80000000" IsVisible="False" Margin="-28,-24">
+            <Border Classes="card" MaxWidth="420" Padding="26"
+                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                    BoxShadow="0 20 40 #40000000">
+                <StackPanel Spacing="16">
+                    <TextBlock Text="Отменить заказ?" Classes="h2"/>
+                    <TextBlock Classes="muted"
+                               Text="Заказ получит статус «Отменён», а игры вернутся на склад и станут доступны другим покупателям. Это действие нельзя отменить."/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10">
+                        <Button Content="Нет, оставить" Classes="ghost" Click="CancelDeleteClick"/>
+                        <Button Content="Да, отменить" Background="{StaticResource DangerBrush}"
+                                Foreground="White" Click="ConfirmDeleteClick"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Border>
+    </Grid>
+</UserControl>

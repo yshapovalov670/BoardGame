@@ -1,0 +1,87 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="BoardGame.Views.StaffManagementView"
+             Tag="Сотрудники">
+
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Spacing="2" Margin="0,0,0,16">
+            <TextBlock Classes="h1" Text="Сотрудники магазина"/>
+            <TextBlock Classes="muted" Text="Выберите сотрудника слева, чтобы изменить его данные"/>
+        </StackPanel>
+
+        <Grid ColumnDefinitions="340,*">
+
+            <!-- СЛЕВА: список сотрудников -->
+            <Border Grid.Column="0" Classes="card" Padding="8" Margin="0,0,16,0">
+                <ListBox x:Name="StaffList" Background="Transparent" SelectionChanged="StaffSelected">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid ColumnDefinitions="Auto,*" Margin="4,6">
+                                <Border Width="38" Height="38" CornerRadius="19" Margin="0,0,12,0"
+                                        Background="{StaticResource AccentSoftBrush}">
+                                    <TextBlock Text="{Binding Initials}" FontWeight="Bold" FontSize="13"
+                                               Foreground="{StaticResource AccentBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding FullName}" FontWeight="SemiBold"/>
+                                    <TextBlock Classes="muted" FontSize="12">
+                                        <Run Text="{Binding Login, Mode=OneWay}"/>
+                                        <Run Text="{Binding Path=RoleName, Mode=OneWay, StringFormat={} · {0}}"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+
+            <!-- СПРАВА: форма редактирования -->
+            <Border x:Name="EditPanel" Grid.Column="1" Classes="card" Padding="26"
+                    VerticalAlignment="Top" IsVisible="False">
+                <StackPanel Spacing="16">
+                    <TextBlock x:Name="EditTitle" Text="Редактирование" Classes="h2"/>
+
+                    <Grid ColumnDefinitions="*,14,*" RowDefinitions="Auto,14,Auto,14,Auto">
+                        <StackPanel Grid.Row="0" Grid.Column="0">
+                            <TextBlock Text="ИМЯ" Classes="label"/>
+                            <TextBox x:Name="EditName"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2">
+                            <TextBlock Text="ФАМИЛИЯ" Classes="label"/>
+                            <TextBox x:Name="EditLastName"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="0">
+                            <TextBlock Text="ТЕЛЕФОН" Classes="label"/>
+                            <TextBox x:Name="EditPhone"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="2">
+                            <TextBlock Text="EMAIL" Classes="label"/>
+                            <TextBox x:Name="EditEmail"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Grid.Column="0">
+                            <TextBlock Text="ДОЛЖНОСТЬ (РОЛЬ)" Classes="label"/>
+                            <ComboBox x:Name="EditRole" HorizontalAlignment="Stretch">
+                                <ComboBoxItem Content="Продавец" Tag="Продавец"/>
+                                <ComboBoxItem Content="Администратор" Tag="Администратор"/>
+                            </ComboBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Grid.Column="2">
+                            <TextBlock Text="ЛОГИН (НЕ ИЗМЕНЯЕТСЯ)" Classes="label"/>
+                            <TextBox x:Name="EditLogin" IsReadOnly="True" Foreground="{StaticResource MutedBrush}"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Button Content="Сохранить изменения" Classes="primary" Click="SaveStaffClick"/>
+                        <Button Content="Отмена" Classes="ghost" Click="CancelEditClick"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Заглушка, если ничего не выбрано -->
+            <TextBlock x:Name="EmptyHint" Grid.Column="1" Text="Выберите сотрудника в списке"
+                       Classes="muted" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Grid>
+    </DockPanel>
+</UserControl>

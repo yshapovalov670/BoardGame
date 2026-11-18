@@ -1,0 +1,177 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="700"
+             x:Class="BoardGame.Views.OrdersView"
+             Tag="Список заказов">
+
+    <DockPanel>
+
+        <!-- ЗАГОЛОВОК, СЧЁТЧИКИ И ФИЛЬТРЫ -->
+        <StackPanel DockPanel.Dock="Top" Spacing="16" Margin="0,0,0,16">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Spacing="2">
+                    <TextBlock x:Name="TitleText" Classes="h1" Text="Мои заказы"/>
+                    <TextBlock x:Name="SubtitleText" Classes="muted" Text="Нажмите на заказ, чтобы открыть подробности"/>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="8" VerticalAlignment="Center">
+                    <Button Content="Обновить" Classes="ghost" Click="ReloadClick"/>
+                    <Button x:Name="NewButton" Content="+ Новый заказ" Classes="primary" Click="NewClick"/>
+                </StackPanel>
+            </Grid>
+
+            <!-- Счётчики -->
+            <UniformGrid Columns="3">
+                <Border Classes="card stat" Margin="0,0,8,0">
+                    <StackPanel>
+                        <TextBlock Text="ОЖИДАЮТ ВЫДАЧИ" Classes="label"/>
+                        <TextBlock x:Name="ReservedCount" Text="0" FontSize="26" FontWeight="Bold"
+                                   Foreground="{StaticResource SuccessBrush}"/>
+                    </StackPanel>
+                </Border>
+                <Border Classes="card stat" Margin="4,0">
+                    <StackPanel>
+                        <TextBlock Text="ВЫДАНЫ" Classes="label"/>
+                        <TextBlock x:Name="IssuedCount" Text="0" FontSize="26" FontWeight="Bold"/>
+                    </StackPanel>
+                </Border>
+                <Border Classes="card stat" Margin="8,0,0,0">
+                    <StackPanel>
+                        <TextBlock x:Name="SumLabel" Text="СУММА ПОКУПОК" Classes="label"/>
+                        <TextBlock x:Name="SumText" Text="0 руб." FontSize="26" FontWeight="Bold"
+                                   Foreground="{StaticResource AccentBrush}"/>
+                    </StackPanel>
+                </Border>
+            </UniformGrid>
+
+            <Grid ColumnDefinitions="*,220">
+                <TextBox x:Name="SearchBox" PlaceholderText="Поиск по номеру, покупателю или игре..."
+                         TextChanged="SearchChanged"/>
+                <ComboBox x:Name="StatusFilter" Grid.Column="1" Margin="10,0,0,0"
+                          HorizontalAlignment="Stretch" SelectionChanged="FilterChanged">
+                    <ComboBoxItem Content="Все статусы"/>
+                    <ComboBoxItem Content="Оформлен"/>
+                    <ComboBoxItem Content="Выдан"/>
+                    <ComboBoxItem Content="Отменён"/>
+                </ComboBox>
+            </Grid>
+        </StackPanel>
+
+        <Grid>
+            <!-- СПИСОК ЗАКАЗОВ -->
+            <ListBox x:Name="OrdersList" Background="Transparent" SelectionMode="Single"
+                     Tapped="OrdersTapped">
+                <ListBox.ItemContainerTheme>
+                    <ControlTheme TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="0"/>
+                        <Setter Property="Margin" Value="0,0,0,10"/>
+                        <Setter Property="Background" Value="White"/>
+                        <Setter Property="Template">
+                            <ControlTemplate>
+                                <Border Name="RootBorder" Background="{TemplateBinding Background}"
+                                        BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"
+                                        CornerRadius="12" Cursor="Hand">
+                                    <ContentPresenter Name="Presenter"
+                                                      ContentTemplate="{TemplateBinding ContentTemplate}"
+                                                      Content="{TemplateBinding Content}"
+                                                      HorizontalContentAlignment="Stretch"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Setter>
+                        <Style Selector="^:pointerover /template/ Border#RootBorder">
+                            <Setter Property="BorderBrush" Value="#C3CFC9"/>
+                        </Style>
+                        <Style Selector="^:selected /template/ Border#RootBorder">
+                            <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                            <Setter Property="BorderThickness" Value="2"/>
+                        </Style>
+                    </ControlTheme>
+                </ListBox.ItemContainerTheme>
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid ColumnDefinitions="Auto,*,Auto,Auto" Margin="18,14">
+                            <!-- Дата оформления -->
+                            <Border Width="62" Height="62" CornerRadius="10" Margin="0,0,18,0"
+                                    Background="{StaticResource AccentSoftBrush}">
+                                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding CreatedAt, StringFormat={}{0:dd}}" FontSize="22"
+                                               FontWeight="Bold" HorizontalAlignment="Center"
+                                               Foreground="{StaticResource AccentBrush}"/>
+                                    <TextBlock Text="{Binding CreatedAt, StringFormat={}{0:MMM yyyy}}" FontSize="11"
+                                               HorizontalAlignment="Center" Foreground="{StaticResource AccentBrush}"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Номер, состав, покупатель -->
+                            <StackPanel Grid.Column="1" Spacing="3" VerticalAlignment="Center">
+                                <TextBlock FontWeight="Bold" FontSize="16">
+                                    <Run Text="{Binding Path=OrderId, Mode=OneWay, StringFormat=Заказ № {0}}"/>
+                                    <Run Text="{Binding Path=ItemsCount, Mode=OneWay, StringFormat={}  · {0} шт.}"
+                                         Foreground="{StaticResource MutedBrush}" FontWeight="Normal" FontSize="13"/>
+                                </TextBlock>
+                                <TextBlock Classes="muted" FontSize="13" Text="{Binding ItemsText}"
+                                           TextTrimming="CharacterEllipsis" MaxLines="1"/>
+                                <StackPanel Orientation="Horizontal" Spacing="14">
+                                    <TextBlock Classes="muted client" FontSize="13"
+                                               Text="{Binding ClientName, StringFormat=Покупатель: {0}}"/>
+                                    <TextBlock FontSize="13" Text="{Binding ReserveText}"
+                                               Foreground="{StaticResource WarningBrush}"/>
+                                </StackPanel>
+                            </StackPanel>
+
+                            <!-- Статус -->
+                            <Border Grid.Column="2" Classes="badge status" Margin="12,0"
+                                    Classes.cancelled="{Binding IsCancelled}"
+                                    Classes.issued="{Binding IsIssued}">
+                                <TextBlock Text="{Binding StatusName}"/>
+                            </Border>
+
+                            <!-- Сумма -->
+                            <TextBlock Grid.Column="3" Text="{Binding TotalCost, StringFormat={}{0:N0} руб.}"
+                                       FontWeight="Bold" FontSize="18" VerticalAlignment="Center"
+                                       MinWidth="110" TextAlignment="Right"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <StackPanel x:Name="EmptyPanel" IsVisible="False" Spacing="6"
+                        HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock x:Name="EmptyTitle" Text="Заказов пока нет" Classes="h2" HorizontalAlignment="Center"/>
+                <TextBlock x:Name="EmptyHint" Text="Добавьте игры в корзину и оформите заказ"
+                           Classes="muted" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+
+    <UserControl.Styles>
+        <Style Selector="Border.stat">
+            <Setter Property="Padding" Value="18,14"/>
+        </Style>
+        <!-- Покупателю строка «Покупатель: ...» не нужна — это всегда он сам -->
+        <Style Selector="ListBox.own TextBlock.client">
+            <Setter Property="IsVisible" Value="False"/>
+        </Style>
+        <!-- Цвет плашки статуса: по умолчанию «Оформлен» (зелёный) -->
+        <Style Selector="Border.status">
+            <Setter Property="Background" Value="{StaticResource SuccessSoftBrush}"/>
+        </Style>
+        <Style Selector="Border.status > TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource SuccessBrush}"/>
+        </Style>
+        <Style Selector="Border.status.cancelled">
+            <Setter Property="Background" Value="{StaticResource DangerSoftBrush}"/>
+        </Style>
+        <Style Selector="Border.status.cancelled > TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource DangerBrush}"/>
+        </Style>
+        <Style Selector="Border.status.issued">
+            <Setter Property="Background" Value="{StaticResource NeutralSoftBrush}"/>
+        </Style>
+        <Style Selector="Border.status.issued > TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource NeutralBrush}"/>
+        </Style>
+    </UserControl.Styles>
+</UserControl>

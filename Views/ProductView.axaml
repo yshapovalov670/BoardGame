@@ -1,0 +1,88 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="BoardGame.Views.ProductView"
+             Tag="Карточка игры">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <Grid ColumnDefinitions="*,380">
+
+            <!-- ЛЕВАЯ ЧАСТЬ: информация об игре -->
+            <StackPanel Grid.Column="0" Spacing="16" Margin="0,0,24,0">
+                <Button Content="← Назад к каталогу" Classes="link" Click="BackClick"/>
+                <StackPanel Spacing="2">
+                    <TextBlock x:Name="CategoryText" Classes="muted"/>
+                    <TextBlock x:Name="NameText" Classes="h1" Text="Игра"/>
+                </StackPanel>
+
+                <Border CornerRadius="14" ClipToBounds="True" Background="{StaticResource BackgroundBrush}">
+                    <Image x:Name="ProductImage" Stretch="Uniform" MaxHeight="420"/>
+                </Border>
+
+                <Border Classes="card">
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="ОПИСАНИЕ" Classes="label"/>
+                        <TextBlock x:Name="DescriptionText"/>
+                    </StackPanel>
+                </Border>
+
+                <Border Classes="card">
+                    <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
+                        <TextBlock Grid.Column="0" Text="ИГРОКОВ" Classes="label"/>
+                        <TextBlock Grid.Column="1" Text="ВОЗРАСТ" Classes="label"/>
+                        <TextBlock Grid.Column="2" Text="ВРЕМЯ ПАРТИИ" Classes="label"/>
+                        <TextBlock Grid.Row="1" Grid.Column="0" x:Name="PlayersText" FontSize="16" FontWeight="SemiBold"/>
+                        <TextBlock Grid.Row="1" Grid.Column="1" x:Name="AgeText" FontSize="16" FontWeight="SemiBold"/>
+                        <TextBlock Grid.Row="1" Grid.Column="2" x:Name="TimeText" FontSize="16" FontWeight="SemiBold"/>
+                    </Grid>
+                </Border>
+            </StackPanel>
+
+            <!-- ПРАВАЯ ЧАСТЬ: покупка -->
+            <Border Grid.Column="1" Classes="card" VerticalAlignment="Top" Padding="24">
+                <StackPanel Spacing="14">
+                    <TextBlock Text="Покупка" Classes="h2"/>
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="Артикул" Classes="muted"/>
+                        <TextBlock x:Name="ArticleText" Grid.Column="1"/>
+                    </Grid>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="На складе" Classes="muted"/>
+                        <TextBlock x:Name="StockText" Grid.Column="1" FontWeight="SemiBold"/>
+                    </Grid>
+
+                    <StackPanel>
+                        <TextBlock Text="КОЛИЧЕСТВО, ШТ." Classes="label"/>
+                        <NumericUpDown x:Name="QuantityBox" Minimum="1" Maximum="10" Value="1"
+                                       Increment="1" FormatString="0" ValueChanged="QuantityChanged"/>
+                    </StackPanel>
+
+                    <!-- Расчёт стоимости -->
+                    <Border Background="{StaticResource BackgroundBrush}" CornerRadius="10" Padding="14">
+                        <StackPanel Spacing="6">
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock x:Name="PriceLabel" Text="Цена за штуку" Classes="muted"/>
+                                <TextBlock x:Name="PriceText" Grid.Column="1" Text="—"/>
+                            </Grid>
+                            <TextBlock x:Name="DiscountText" FontSize="12" IsVisible="False"
+                                       Foreground="{StaticResource WarningBrush}"/>
+                            <Border Height="1" Background="{StaticResource BorderBrush}" Margin="0,4"/>
+                            <Grid ColumnDefinitions="*,Auto">
+                                <TextBlock Text="Сумма" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                <TextBlock x:Name="TotalText" Grid.Column="1" Text="—"
+                                           FontWeight="Bold" FontSize="22" Foreground="{StaticResource AccentBrush}"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <TextBlock x:Name="HintText" Classes="muted" FontSize="12" IsVisible="False"/>
+
+                    <Button x:Name="AddButton" Content="Добавить в корзину" Classes="primary"
+                            HorizontalAlignment="Stretch" Padding="16,11" Click="AddClick"/>
+                    <Button x:Name="CartButton" Content="Перейти в корзину" Classes="ghost"
+                            HorizontalAlignment="Stretch" Click="GoToCartClick"/>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

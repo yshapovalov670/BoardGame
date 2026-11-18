@@ -1,0 +1,1 @@
+Server=localhost;Database=BoardGameStore;Trusted_Connection=True;TrustServerCertificate=True;Connect Timeout=5

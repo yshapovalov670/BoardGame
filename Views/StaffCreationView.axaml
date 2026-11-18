@@ -1,0 +1,59 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="BoardGame.Views.StaffCreationView"
+             Tag="Новый сотрудник">
+
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="16" Width="640" HorizontalAlignment="Left">
+            <StackPanel Spacing="2">
+                <TextBlock Classes="h1" Text="Новый сотрудник"/>
+                <TextBlock Classes="muted" Text="Создание учётной записи продавца или администратора"/>
+            </StackPanel>
+
+            <Border Classes="card" Padding="26">
+                <StackPanel Spacing="14">
+                    <StackPanel>
+                        <TextBlock Text="РОЛЬ" Classes="label"/>
+                        <ComboBox x:Name="RoleSelect" HorizontalAlignment="Stretch"
+                                  PlaceholderText="Кого добавляем?">
+                            <ComboBoxItem Content="Продавец" Tag="Продавец"/>
+                            <ComboBoxItem Content="Администратор" Tag="Администратор"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <Grid ColumnDefinitions="*,14,*" RowDefinitions="Auto,14,Auto,14,Auto">
+                        <StackPanel Grid.Row="0" Grid.Column="0">
+                            <TextBlock Text="ИМЯ" Classes="label"/>
+                            <TextBox x:Name="StaffFirst" PlaceholderText="Имя"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="0" Grid.Column="2">
+                            <TextBlock Text="ФАМИЛИЯ" Classes="label"/>
+                            <TextBox x:Name="StaffLast" PlaceholderText="Фамилия"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="0">
+                            <TextBlock Text="ТЕЛЕФОН" Classes="label"/>
+                            <TextBox x:Name="StaffPhone" PlaceholderText="+7 999 123-45-67"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="2" Grid.Column="2">
+                            <TextBlock Text="EMAIL" Classes="label"/>
+                            <TextBox x:Name="StaffEmail" PlaceholderText="name@boardgames.ru"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Grid.Column="0">
+                            <TextBlock Text="ЛОГИН" Classes="label"/>
+                            <TextBox x:Name="StaffLogin" PlaceholderText="Логин для входа"/>
+                        </StackPanel>
+                        <StackPanel Grid.Row="4" Grid.Column="2">
+                            <TextBlock Text="ПАРОЛЬ" Classes="label"/>
+                            <TextBox x:Name="StaffPass" PasswordChar="•" PlaceholderText="Не менее 4 символов"/>
+                        </StackPanel>
+                    </Grid>
+
+                    <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,6,0,0">
+                        <Button x:Name="SaveButton" Content="Сохранить сотрудника" Classes="primary" Click="SaveClick"/>
+                        <Button Content="Очистить" Classes="ghost" Click="CancelClick"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
